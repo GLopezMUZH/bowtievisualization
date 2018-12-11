@@ -24,7 +24,7 @@ def __plotLabel(x, y, text, alineation= "left", fontSize = 12):
     y = y - 0.025  # shift y-value for label so that it's below the artist
     plt.text(x, y, text, ha=alineation, family='sans-serif', size=fontSize, bbox={'facecolor':'lightgray', 'alpha':0.5, 'pad':2})
 
-class bowTieVisualization:
+class createBowTieNetworkValues:
     """"""
     #TODO
 
@@ -642,7 +642,7 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration"):
     model : "configuration", "ER", ""
         Model with wich the graphs will be created, valid modesl are:
         "configuration" : directed_configuration_model
-        "ER" : 
+        "ER" : Erdős-Rényi Gnp graph
         default is "configuration", this model will be used if no other valid name is given.
     Returns
     -------
@@ -668,6 +668,7 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration"):
     # add the values for each realization
     for i in range(samples):
         if (model == "ER"):
+            # TODO fast_gnp_random_graph(n, p, seed=None, directed=False)
             g = nx.directed_configuration_model(din,dout)
         else :
             g = nx.directed_configuration_model(din,dout)
