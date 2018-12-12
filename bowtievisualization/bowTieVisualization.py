@@ -1,3 +1,4 @@
+
 #%%
 import matplotlib.pyplot as plt
 plt.style.use('ggplot')
@@ -52,7 +53,7 @@ class BowTieNetworkValues:
     connectedComponentsSizes = []
 
     """
-    def __init__(self, nrNodesAllGraph = 0, nrNodesWeaklyLCC = 0, nrNodesOCC = 0, nrNodesIn = 0, nrNodesSCC = 0, nrNodesOut = 0, nrNodesTubes = 0, nrNodesTendrilsIn = 0, nrNodesTendrilsOut = 0, connectedComponentsSizes = []):
+    def __init__(self, nrNodesAllGraph = 0, nrNodesWeaklyLCC = 0, nrNodesOCC = 0, nrNodesIn = 0, nrNodesSCC = 0, nrNodesOut = 0, nrNodesTubes = 0, nrNodesTendrilsIn = 0, nrNodesTendrilsOut = 0, nrNodesUnidentified = 0, connectedComponentsSizes = []):
         self.nrNodesAllGraph = nrNodesAllGraph
         self.nrNodesWeaklyLCC = nrNodesWeaklyLCC
         self.nrNodesOCC = nrNodesOCC
@@ -62,6 +63,7 @@ class BowTieNetworkValues:
         self.nrNodesTubes = nrNodesTubes
         self.nrNodesTendrilsIn = nrNodesTendrilsIn
         self.nrNodesTendrilsOut = nrNodesTendrilsOut
+        self.nrNodesUnidentified = nrNodesUnidentified
         self.pctAreaWeaklyLCCNodes = 0 if (nrNodesAllGraph is None or nrNodesAllGraph == 0) else round((nrNodesWeaklyLCC / nrNodesAllGraph * 100),2)
         self.pctAreaOCCNodes = 0 if (nrNodesAllGraph is None or nrNodesAllGraph == 0) else round((nrNodesOCC / nrNodesAllGraph * 100),2)
         self.pctAreaInNodes = 0 if (nrNodesAllGraph is None or nrNodesAllGraph == 0) else round((nrNodesIn / nrNodesAllGraph * 100),2)
@@ -550,7 +552,7 @@ def plotBowTie(bowTieNetworkValues, sizeFactor = 2, saveSVGfile = False, svgFile
         __plotLabel(RTubesx, 1 - bowTieVisualizationValues.hTubes/2,  labelTubes, alineation="center")
 
     #TODO
-    labelOCC = str("Tubes\n") + str(bowTieNetworkValues.pctAreaOCCNodes) + str(" %\n n=") + str(bowTieNetworkValues.nrNodesOCC)
+    labelOCC = str("OCC\n") + str(bowTieNetworkValues.pctAreaOCCNodes) + str(" %\n n=") + str(bowTieNetworkValues.nrNodesOCC)
 
     if(bowTieNetworkValues.nrNodesOCC>0):
         if (bowTieNetworkValues.pctAreaOCCNodes < 20):
@@ -651,9 +653,9 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration"):
     """
     din = list(d for n, d in gx.in_degree())
     dout = list(d for n, d in gx.out_degree())
-    n = 0
-    m = 0
-    p = 0
+    n = gx.order()
+    m = nx.number_of_edges(gx)
+    p = m/(n*(n-1))
 
     nrNodesAllGraph = 0
     nrNodesWeaklyLCC = 0
@@ -665,11 +667,14 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration"):
     nrNodesTendrilsIn = 0
     nrNodesTendrilsOut = 0
 
+    if (model == "ER"):
+        print("Gnp values. n:",n, ", p:", p)
+
+
     # add the values for each realization
     for i in range(samples):
         if (model == "ER"):
-            # TODO fast_gnp_random_graph(n, p, seed=None, directed=False)
-            g = nx.directed_configuration_model(din,dout)
+            g = nx.fast_gnp_random_graph(n=n, p=p, directed = True)
         else :
             g = nx.directed_configuration_model(din,dout)
         
@@ -698,7 +703,7 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration"):
 
 
     # create dictionary
-    dictBowTieNetworkValues = dict(
+    bowTieNetworkValues = BowTieNetworkValues(
         nrNodesAllGraph = nrNodesAllGraph,
         nrNodesWeaklyLCC = nrNodesWeaklyLCC,
         nrNodesOCC = nrNodesOCC,
@@ -707,26 +712,26 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration"):
         nrNodesOut = nrNodesOut,
         nrNodesTubes = nrNodesTubes,
         nrNodesTendrilsIn = nrNodesTendrilsIn,
-        nrNodesTendrilsOut = nrNodesTendrilsOut,
-        pctAreaWeaklyLCCNodes = round((nrNodesWeaklyLCC / nrNodesAllGraph * 100),2),
-        pctAreaOCCNodes = round((nrNodesOCC / nrNodesAllGraph * 100),2),
-        pctAreaInNodes = round((nrNodesIn / nrNodesAllGraph * 100),2),
-        pctAreaSCCNodes = round((nrNodesSCC / nrNodesAllGraph * 100),2),
-        pctAreaOutNodes = round((nrNodesOut / nrNodesAllGraph * 100),2),
-        pctAreaTubeNodes = round((nrNodesTubes / nrNodesAllGraph * 100),2),
-        pctAreaTendrilsInNodes = round((nrNodesTendrilsIn / nrNodesAllGraph * 100),2),
-        pctAreaTendrilsOutNodes = round((nrNodesTendrilsOut / nrNodesAllGraph * 100),2)
+        nrNodesTendrilsOut = nrNodesTendrilsOut
     )
 
-    return dictBowTieNetworkValues
+    return bowTieNetworkValues
 
 
-def showBowTieVisualizationWithEnsamble(gx, samples = 5, model = "configuration", plotPieValues = True, printBowTieNetworkValues = True, saveSVGfile = False, plotSizeFactor = 2):
+
+def showBowTieVisualizationWithEnsamble(gx, samples = 5, model = "configuration", plotPieValues = True, printBowTieNetworkValues = True, saveSVGfile = False, plotSizeFactor = 2, printVisualizationValues=False):
+    print("---------------------------- Original graph ----------------------------")
+    showBowTieVisualization(gx = gx, plotPieValues=plotPieValues, saveSVGfile=saveSVGfile, plotSizeFactor=plotSizeFactor, svgFileSufix="Original", printVisualizationValues=printVisualizationValues)
+
+    print("---------------------------- Ensamble values graph ----------------------------")
     ensambleBowTieNewtorkValues = getEnsambleBowTieNetworkValues(gx, samples = samples, model = model)
-    showBowTieVisualization(gx = gx, plotPieValues=plotPieValues, saveSVGfile=saveSVGfile, plotSizeFactor=plotSizeFactor, svgFileSufix="Original")
+
     if plotPieValues:
         plotPieNetworkValues(ensambleBowTieNewtorkValues)
     if printBowTieNetworkValues:
         print(ensambleBowTieNewtorkValues)
+    
     plotBowTie(ensambleBowTieNewtorkValues, sizeFactor=plotSizeFactor, saveSVGfile=saveSVGfile, svgFileSufix="Ensamble")
+    if printVisualizationValues:
+        print(_getBowTieVisualizationValues(ensambleBowTieNewtorkValues))
 
