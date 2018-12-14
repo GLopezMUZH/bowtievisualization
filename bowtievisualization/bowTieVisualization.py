@@ -18,9 +18,6 @@
     - TODO test graph without SCC
     - TODO setup.py + dependencies
     - TODO
-    - TODO
-    - TODO
-    - TODO
 
 """
 import matplotlib.pyplot as plt
@@ -138,6 +135,157 @@ class BowTieVisualizationValues:
         return "<BowTieVisualizationValues: %s>" % _printDict(self.__dict__)
         occupiedArea = self.areaTubes + self.areaTendrilsIn + self.areaIn + self.areaSCC + self.areaOut + self.areaTendrilsOut + self.areaOCC
         print("relative area Tendrils In: ", self.areaTendrilsIn/occupiedArea)
+
+
+class BowTieEnsembleNetworkValues:
+    """
+    Class that contains the mean and standard deviation values when analyzing
+    an ensemble of graphs' bowtie structure values.
+
+    A BowTieEnsembleNetworkValues stores the mean number of nodes of each bowtie component 
+    and the standard deviation of each component from all the graph realizations in the ensemble.
+
+    Parameters
+    ----------
+    meanNrNodesAllGraph : input integer (default: 0)
+        Total number of nodes in the graph
+    meanNrNodesWeaklyLCC : 
+        TODO
+    meanNrNodesOCC = 0
+    meanNrNodesIn = 0
+    meanNrNodesSCC = 0
+    meanNrNodesOut = 0
+    meanNrNodesTubes = 0 
+    meanNrNodesTendrilsIn = 0 
+    meanNrNodesTendrilsOut = 0
+
+    connectedComponentsSizes = []
+
+    """
+    def __init__(self, 
+                meanNrNodesAllGraph=0, 
+                meanNrNodesWeaklyLCC=0, 
+                meanNrNodesTubes = 0,
+                meanNrNodesTendrilsIn = 0,
+                meanNrNodesIn = 0, 
+                meanNrNodesSCC = 0, 
+                meanNrNodesOut = 0, 
+                meanNrNodesTendrilsOut = 0, 
+                meanNrNodesOCC = 0, 
+                meanNrNodesUnidentified = 0, 
+                stdNrNodesAllGraph = 0,
+                stdNrNodesWeaklyLCC = 0,
+                stdNrNodesTubes = 0 ,
+                stdNrNodesTendrilsIn = 0 ,
+                stdNrNodesIn = 0,
+                stdNrNodesSCC = 0,
+                stdNrNodesOut = 0,
+                stdNrNodesTendrilsOut = 0,
+                stdNrNodesOCC = 0,
+                stdNrNodesUnidentified = 0,
+                connectedComponentsSizes = []):
+        self.meanNrNodesAllGraph = meanNrNodesAllGraph
+        self.meanNrNodesWeaklyLCC = meanNrNodesWeaklyLCC
+        self.meanNrNodesTubes = meanNrNodesTubes
+        self.meanNrNodesTendrilsIn = meanNrNodesTendrilsIn
+        self.meanNrNodesIn = meanNrNodesIn
+        self.meanNrNodesSCC = meanNrNodesSCC
+        self.meanNrNodesOut = meanNrNodesOut
+        self.meanNrNodesTendrilsOut = meanNrNodesTendrilsOut
+        self.meanNrNodesOCC = meanNrNodesOCC
+        self.meanNrNodesUnidentified = meanNrNodesUnidentified
+        
+        self.stdNrNodesAllGraph = stdNrNodesAllGraph
+        self.stdNrNodesWeaklyLCC = stdNrNodesWeaklyLCC
+        self.stdNrNodesTubes = stdNrNodesTubes 
+        self.stdNrNodesTendrilsIn = stdNrNodesTendrilsIn 
+        self.stdNrNodesIn = stdNrNodesIn
+        self.stdNrNodesSCC = stdNrNodesSCC
+        self.stdNrNodesOut = stdNrNodesOut
+        self.stdNrNodesTendrilsOut = stdNrNodesTendrilsOut
+        self.stdNrNodesOCC = stdNrNodesOCC
+        self.stdNrNodesUnidentified = stdNrNodesUnidentified
+
+        self.pctWeaklyLCCNodes = 0 if (self.meanNrNodesAllGraph is None or self.meanNrNodesAllGraph == 0) else round((self.meanNrNodesWeaklyLCC / self.meanNrNodesAllGraph * 100),2)
+        self.pctTubeNodes = 0 if (self.meanNrNodesAllGraph is None or self.meanNrNodesAllGraph == 0) else round((meanNrNodesTubes / self.meanNrNodesAllGraph * 100),2)
+        self.pctTendrilsInNodes = 0 if (self.meanNrNodesAllGraph is None or self.meanNrNodesAllGraph == 0) else round((meanNrNodesTendrilsIn / self.meanNrNodesAllGraph * 100),2)
+        self.pctInNodes = 0 if (self.meanNrNodesAllGraph is None or self.meanNrNodesAllGraph == 0) else round((meanNrNodesIn / self.meanNrNodesAllGraph * 100),2)
+        self.pctSCCNodes = 0 if (self.meanNrNodesAllGraph is None or self.meanNrNodesAllGraph == 0) else round((meanNrNodesSCC / self.meanNrNodesAllGraph * 100),2)
+        self.pctOutNodes = 0 if (self.meanNrNodesAllGraph is None or self.meanNrNodesAllGraph == 0) else round((meanNrNodesOut / self.meanNrNodesAllGraph * 100),2)
+        self.pctTendrilsOutNodes = 0 if (self.meanNrNodesAllGraph is None or self.meanNrNodesAllGraph == 0) else round((meanNrNodesTendrilsOut / self.meanNrNodesAllGraph * 100),2)
+        self.pctOCCNodes = 0 if (self.meanNrNodesAllGraph is None or self.meanNrNodesAllGraph == 0) else round((meanNrNodesOCC / self.meanNrNodesAllGraph * 100),2)
+        self.connectedComponentsSizes = [] if (connectedComponentsSizes is None or len(connectedComponentsSizes)==0)else connectedComponentsSizes
+
+    def __repr__(self):
+        """
+        Prints the BowTieEnsembleNetworkValues keys and values as a list
+        """
+        return "<BowTieEnsembleNetworkValues: %s>" % _printDict(self.__dict__)
+    
+    def toBowTieNetworkValues(self):
+        """
+        Returns the values of the mean number of nodes of each component inside a BowTieNetworkValues object 
+        """
+        bowTieNetworkValues = BowTieNetworkValues(
+            nrNodesTubes =  self.meanNrNodesTubes,
+            nrNodesTendrilsIn =  self.meanNrNodesTendrilsIn,
+            nrNodesIn =  self.meanNrNodesIn,
+            nrNodesSCC =  self.meanNrNodesSCC,
+            nrNodesOut =  self.meanNrNodesOut,
+            nrNodesTendrilsOut = self.meanNrNodesTendrilsOut,
+            nrNodesOCC = self.meanNrNodesOCC,
+            nrNodesUnidentified = self.meanNrNodesUnidentified)
+        return bowTieNetworkValues
+
+    
+class BowTieZScores:
+    """
+    Class that stores the Z-score for each bowtie component
+    comparing the base mean and standard deviation from the
+    ensemble values with the values of the given graph.
+
+    Parameters
+    ----------
+    TODO
+    zscoreNodesAllGraph : input integer (default: 0)
+    zscoreNodesWeaklyLCC : 
+    zscoreNodesOCC = 0
+    zscoreNodesIn = 0
+    zscoreNodesSCC = 0
+    zscoreNodesOut = 0
+    zscoreNodesTubes = 0 
+    zscoreNodesTendrilsIn = 0 
+    zscoreNodesTendrilsOut = 0
+    connectedComponentsSizes = []
+
+    """
+    def __init__(self,  
+            zscoreNodesAllGraph = 0,
+            zscoreNodesWeaklyLCC = 0,
+            zscoreNodesTubes = 0,
+            zscoreNodesTendrilsIn = 0, 
+            zscoreNodesIn = 0, 
+            zscoreNodesSCC = 0, 
+            zscoreNodesOut = 0, 
+            zscoreNodesTendrilsOut = 0, 
+            zscoreNodesOCC = 0, 
+            zscoreNodesUnidentified = 0):
+        self.zscoreNodesAllGraph = zscoreNodesAllGraph
+        self.zscoreNodesWeaklyLCC = zscoreNodesWeaklyLCC
+        self.zscoreNodesTubes = zscoreNodesTubes
+        self.zscoreNodesTendrilsIn = zscoreNodesTendrilsIn
+        self.zscoreNodesIn = zscoreNodesIn
+        self.zscoreNodesSCC = zscoreNodesSCC
+        self.zscoreNodesOut = zscoreNodesOut
+        self.zscoreNodesTendrilsOut = zscoreNodesTendrilsOut
+        self.zscoreNodesOCC = zscoreNodesOCC
+        self.zscoreNodesUnidentified = zscoreNodesUnidentified
+
+    def __repr__(self):
+        """
+        Prints the BowTieZScores keys and values as a list
+        """
+        return "<BowTieZScores: %s>" % _printDict(self.__dict__)
 
 
 def getBowTieNetworkValues(gx, debug = False):
@@ -703,22 +851,26 @@ def showBowTieVisualization(gx, plotPieValues = True, printBowTieNetworkValues =
         Sufix for the svg file of the plot visualization
     Returns
     -------
-    ?? : ??
-        plot??
+    bowTieNetworkValues : BowTieNetworkValues object
+        BowTieNetworkValues object of the given graph
     """
 
     bowTieNetworkValues = getBowTieNetworkValues(gx)
+    
     if plotPieValues:
         plotPieNetworkValues(bowTieNetworkValues)
+
     if printBowTieNetworkValues:
         print(bowTieNetworkValues)
     plotBowTie(bowTieNetworkValues, sizeFactor=plotSizeFactor, saveSVGfile=saveSVGfile, svgFileSufix=svgFileSufix, printVisualizationValues = printVisualizationValues)
+    
+    return bowTieNetworkValues
 
 
 
-def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration"):
+def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration", debug = False):
     """
-    Returns the averaged Bow Tie Network Values for graphs created based on the
+    Returns an object BowTieEnsembleNetworkValues for the ensamble of graphs created based on the
     network topology of the given graph under a certain model.
     Parameters
     ----------
@@ -733,24 +885,29 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration"):
         default is "configuration", this model will be used if no other valid name is given.
     Returns
     -------
-    R : bowTieNetworkValues
-        Averaged Network Values for all the generated graphs
+    R : BowTieEnsembleNetworkValues
+        TODO
     """
+    def __printDebug(*val):
+        if debug:
+            print(list(val))
+
     din = list(d for n, d in gx.in_degree())
     dout = list(d for n, d in gx.out_degree())
     n = gx.order()
     m = nx.number_of_edges(gx)
     p = m/(n*(n-1))
 
-    nrNodesAllGraph = 0
-    nrNodesWeaklyLCC = 0
-    nrNodesOCC = 0
-    nrNodesIn = 0
-    nrNodesSCC = 0
-    nrNodesOut = 0
-    nrNodesTubes = 0
-    nrNodesTendrilsIn = 0
-    nrNodesTendrilsOut = 0
+    resultsNodesAllGraph = []
+    reusltNodesWeaklyLCC = []
+    resultNodesTubes = []
+    resultNodesTendrilsIn = []
+    resultsNodesIn = []
+    resultNodesSCC = []
+    resultNodesOut = []
+    resultNodesTendrilsOut = []
+    resultNodesOCC = []
+    resultNodesUnidentified = []
 
     if (model == "ER"):
         print("Gnp values. n:",n, ", p:", p)
@@ -764,57 +921,88 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration"):
             g = nx.directed_configuration_model(din,dout)
         
         btV = getBowTieNetworkValues(g)
-        nrNodesAllGraph += btV.nrNodesAllGraph
-        nrNodesWeaklyLCC += btV.nrNodesWeaklyLCC
-        nrNodesOCC += btV.nrNodesOCC
-        nrNodesIn += btV.nrNodesIn
-        nrNodesSCC += btV.nrNodesSCC
-        nrNodesOut += btV.nrNodesOut
-        nrNodesTubes += btV.nrNodesTubes
-        nrNodesTendrilsIn += btV.nrNodesTendrilsIn
-        nrNodesTendrilsOut += btV.nrNodesTendrilsOut
 
+        resultsNodesAllGraph.append(btV.nrNodesAllGraph)
+        reusltNodesWeaklyLCC.append(btV.nrNodesWeaklyLCC)
+        resultNodesTubes.append(btV.nrNodesTubes)
+        resultNodesTendrilsIn.append(btV.nrNodesTendrilsIn)
+        resultsNodesIn.append(btV.nrNodesIn)
+        resultNodesSCC.append(btV.nrNodesSCC)
+        resultNodesOut.append(btV.nrNodesOut)
+        resultNodesTendrilsOut.append(btV.nrNodesTendrilsOut)
+        resultNodesOCC.append(btV.nrNodesOCC)
+        resultNodesUnidentified.append(btV.nrNodesUnidentified)
 
-    # average the values
-    nrNodesAllGraph = nrNodesAllGraph/samples
-    nrNodesWeaklyLCC = nrNodesWeaklyLCC/samples
-    nrNodesOCC = nrNodesOCC/samples
-    nrNodesIn = nrNodesIn/samples
-    nrNodesSCC = nrNodesSCC/samples
-    nrNodesOut = nrNodesOut/samples
-    nrNodesTubes = nrNodesTubes/samples
-    nrNodesTendrilsIn = nrNodesTendrilsIn/samples
-    nrNodesTendrilsOut = nrNodesTendrilsOut/samples
-
+    __printDebug("Result Nodes All Graph: ", resultsNodesAllGraph)
 
     # create dictionary
-    bowTieNetworkValues = BowTieNetworkValues(
-        nrNodesOCC = nrNodesOCC,
-        nrNodesIn = nrNodesIn,
-        nrNodesSCC = nrNodesSCC,
-        nrNodesOut = nrNodesOut,
-        nrNodesTubes = nrNodesTubes,
-        nrNodesTendrilsIn = nrNodesTendrilsIn,
-        nrNodesTendrilsOut = nrNodesTendrilsOut
+    bowTieEnsembleNetworkValues = BowTieEnsembleNetworkValues(
+        meanNrNodesAllGraph= np.mean(resultsNodesAllGraph, dtype=np.float64), 
+        meanNrNodesWeaklyLCC= np.mean(reusltNodesWeaklyLCC, dtype=np.float64), 
+        meanNrNodesTubes = np.mean(resultNodesTubes, dtype=np.float64), 
+        meanNrNodesTendrilsIn = np.mean(resultNodesTendrilsIn, dtype=np.float64), 
+        meanNrNodesIn = np.mean(resultsNodesIn, dtype=np.float64), 
+        meanNrNodesSCC = np.mean(resultNodesSCC, dtype=np.float64), 
+        meanNrNodesOut = np.mean(resultNodesOut, dtype=np.float64), 
+        meanNrNodesTendrilsOut = np.mean(resultNodesTendrilsOut, dtype=np.float64), 
+        meanNrNodesOCC = np.mean(resultNodesOCC, dtype=np.float64), 
+        meanNrNodesUnidentified = np.mean(resultNodesUnidentified, dtype=np.float64), 
+        stdNrNodesAllGraph = np.std(resultsNodesAllGraph, dtype=np.float64), 
+        stdNrNodesWeaklyLCC = np.std(reusltNodesWeaklyLCC, dtype=np.float64), 
+        stdNrNodesTubes = np.std(resultNodesTubes, dtype=np.float64), 
+        stdNrNodesTendrilsIn = np.std(resultNodesTendrilsIn, dtype=np.float64), 
+        stdNrNodesIn = np.std(resultsNodesIn, dtype=np.float64), 
+        stdNrNodesSCC = np.std(resultNodesSCC, dtype=np.float64), 
+        stdNrNodesOut = np.std(resultNodesOut, dtype=np.float64), 
+        stdNrNodesTendrilsOut = np.std(resultNodesTendrilsOut, dtype=np.float64), 
+        stdNrNodesOCC = np.std(resultNodesOCC, dtype=np.float64), 
+        stdNrNodesUnidentified = np.std(resultNodesUnidentified, dtype=np.float64)
     )
 
-    return bowTieNetworkValues
+    return bowTieEnsembleNetworkValues
 
+def calcZscores (bowTieNetworkValues, bowTieEnsembleNetworkValues):
+    """
+    Calculates the Z-scores of each component of the bow-tie structure comparing the 
+    fiven bow-tie networkvalues of a graph against the mean and standard deviation
+    from the provided ensamble values.
+    Definition: The Z-score of a component with standard deviation 0 returns a value of 0.
+
+    """
+    bowTieZScores = BowTieZScores()
+
+    bowTieZScores.zscoreNodesAllGraph = 0 if (bowTieEnsembleNetworkValues.stdNrNodesAllGraph == 0 ) else (bowTieNetworkValues.nrNodesAllGraph - bowTieEnsembleNetworkValues.meanNrNodesAllGraph) / bowTieEnsembleNetworkValues.stdNrNodesAllGraph
+    bowTieZScores.zscoreNodesWeaklyLCC = 0 if (bowTieEnsembleNetworkValues.stdNrNodesWeaklyLCC == 0) else (bowTieNetworkValues.nrNodesWeaklyLCC - bowTieEnsembleNetworkValues.meanNrNodesWeaklyLCC) / bowTieEnsembleNetworkValues.stdNrNodesWeaklyLCC
+    bowTieZScores.zscoreNodesTubes = 0 if (bowTieEnsembleNetworkValues.stdNrNodesTubes == 0) else (bowTieNetworkValues.nrNodesTubes - bowTieEnsembleNetworkValues.meanNrNodesTubes) / bowTieEnsembleNetworkValues.stdNrNodesTubes
+    bowTieZScores.zscoreNodesTendrilsIn = 0 if (bowTieEnsembleNetworkValues.stdNrNodesTendrilsIn == 0) else (bowTieNetworkValues.nrNodesTendrilsIn - bowTieEnsembleNetworkValues.meanNrNodesTendrilsIn) / bowTieEnsembleNetworkValues.stdNrNodesTendrilsIn
+    bowTieZScores.zscoreNodesIn = 0 if (bowTieEnsembleNetworkValues.stdNrNodesIn == 0) else (bowTieNetworkValues.nrNodesIn - bowTieEnsembleNetworkValues.meanNrNodesIn) / bowTieEnsembleNetworkValues.stdNrNodesIn
+    bowTieZScores.zscoreNodesSCC = 0 if (bowTieEnsembleNetworkValues.stdNrNodesSCC == 0) else (bowTieNetworkValues.nrNodesSCC - bowTieEnsembleNetworkValues.meanNrNodesSCC) / bowTieEnsembleNetworkValues.stdNrNodesSCC
+    bowTieZScores.zscoreNodesOut = 0 if (bowTieEnsembleNetworkValues.stdNrNodesOut == 0) else (bowTieNetworkValues.nrNodesOut - bowTieEnsembleNetworkValues.meanNrNodesOut) / bowTieEnsembleNetworkValues.stdNrNodesOut
+    bowTieZScores.zscoreNodesTendrilsOut = 0 if (bowTieEnsembleNetworkValues.stdNrNodesTendrilsOut == 0) else (bowTieNetworkValues.nrNodesTendrilsOut - bowTieEnsembleNetworkValues.meanNrNodesTendrilsOut) / bowTieEnsembleNetworkValues.stdNrNodesTendrilsOut
+    bowTieZScores.zscoreNodesOCC = 0 if (bowTieEnsembleNetworkValues.stdNrNodesOCC == 0) else (bowTieNetworkValues.nrNodesOCC - bowTieEnsembleNetworkValues.meanNrNodesOCC) / bowTieEnsembleNetworkValues.stdNrNodesOCC
+    bowTieZScores.zscoreNodesUnidentified = 0 if (bowTieEnsembleNetworkValues.stdNrNodesUnidentified == 0) else (bowTieNetworkValues.nrNodesUnidentified - bowTieEnsembleNetworkValues.meanNrNodesUnidentified) / bowTieEnsembleNetworkValues.stdNrNodesUnidentified
+
+    return bowTieZScores
 
 
 def showBowTieVisualizationWithEnsamble(gx, samples = 5, model = "configuration", plotPieValues = True, printBowTieNetworkValues = True, saveSVGfile = False, plotSizeFactor = 2, printVisualizationValues=False):
     print("---------------------------- Original graph ----------------------------")
-    showBowTieVisualization(gx = gx, plotPieValues=plotPieValues, saveSVGfile=saveSVGfile, plotSizeFactor=plotSizeFactor, svgFileSufix="Original", printVisualizationValues=printVisualizationValues)
+    bowTieNetworkValues = showBowTieVisualization(gx = gx, plotPieValues=plotPieValues, saveSVGfile=saveSVGfile, plotSizeFactor=plotSizeFactor, svgFileSufix="Original", printVisualizationValues=printVisualizationValues)
 
     print("---------------------------- Ensamble values graph ----------------------------")
     ensambleBowTieNewtorkValues = getEnsambleBowTieNetworkValues(gx, samples = samples, model = model)
+    averageEnsambleBowTieNetworkValues = ensambleBowTieNewtorkValues.toBowTieNetworkValues()
 
     if plotPieValues:
-        plotPieNetworkValues(ensambleBowTieNewtorkValues)
+        plotPieNetworkValues(averageEnsambleBowTieNetworkValues)
+    
     if printBowTieNetworkValues:
         print(ensambleBowTieNewtorkValues)
     
-    plotBowTie(ensambleBowTieNewtorkValues, sizeFactor=plotSizeFactor, saveSVGfile=saveSVGfile, svgFileSufix="Ensamble")
+    zscores = calcZscores (bowTieNetworkValues, ensambleBowTieNewtorkValues)
+    print(zscores)
+    
+    plotBowTie(averageEnsambleBowTieNetworkValues, sizeFactor=plotSizeFactor, saveSVGfile=saveSVGfile, svgFileSufix="Ensamble")
     if printVisualizationValues:
-        print(_getBowTieVisualizationValues(ensambleBowTieNewtorkValues))
+        print(_getBowTieVisualizationValues(averageEnsambleBowTieNetworkValues))
 
