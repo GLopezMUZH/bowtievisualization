@@ -17,7 +17,7 @@
     Open Points:
     - TODO test graph without SCC
     - TODO setup.py + dependencies
-    - TODO
+    - TODO improve code comments
 
 """
 import matplotlib.pyplot as plt
@@ -45,10 +45,6 @@ def __plotLabel(x, y, text, alineation= "left", fontSize = 12):
     y = y - 0.025  # shift y-value for label so that it's below the artist
     plt.text(x, y, text, ha=alineation, family='sans-serif', size=fontSize, bbox={'facecolor':'lightgray', 'alpha':0.5, 'pad':2})
 
-class createBowTieNetworkValues:
-    """"""
-    #TODO
-
 
 class BowTieNetworkValues:
     """
@@ -59,21 +55,24 @@ class BowTieNetworkValues:
 
     Parameters
     ----------
-    nrNodesAllGraph : input integer (default: 0)
-        Total number of nodes in the graph
-    nrNodesWeaklyLCC : 
-        TODO
-    nrNodesOCC = 0
-    nrNodesIn = 0
-    nrNodesSCC = 0
-    nrNodesOut = 0
-    nrNodesTubes = 0 
-    nrNodesTendrilsIn = 0 
-    nrNodesTendrilsOut = 0
-    connectedComponentsSizes = []
+    nrNodesTubes : input integer (default: 0)
+        Total number of nodes in the Tubes component
+    nrNodesTendrilsIn : input integer (default: 0)
+        Total number of nodes in the Tendrils-In component
+    nrNodesIn : input integer (default: 0)
+        Total number of nodes in the In component
+    nrNodesSCC : input integer (default: 0)
+        Total number of nodes in the Central Component component
+    nrNodesOut : input integer (default: 0)
+        Total number of nodes in the Out component
+    nrNodesTendrilsOut : input integer (default: 0)
+        Total number of nodes in the Tendrils-Out component
+    nrNodesOCC : input integer (default: 0)
+        Total number of nodes in the Disconnected Components
+    connectedComponentsSizes = list of integers, default empty list
 
     """
-    def __init__(self,  nrNodesTubes = 0,nrNodesTendrilsIn = 0, nrNodesIn = 0, nrNodesSCC = 0, nrNodesOut = 0, nrNodesTendrilsOut = 0, nrNodesOCC = 0, nrNodesUnidentified = 0, connectedComponentsSizes = []):
+    def __init__(self,  nrNodesTubes = 0,nrNodesTendrilsIn = 0, nrNodesIn = 0, nrNodesSCC = 0, nrNodesOut = 0, nrNodesTendrilsOut = 0, nrNodesOCC = 0, connectedComponentsSizes = []):
         self.nrNodesAllGraph = nrNodesTubes + nrNodesTendrilsIn + nrNodesIn + nrNodesSCC + nrNodesOut + nrNodesTendrilsOut + nrNodesOCC 
         self.nrNodesWeaklyLCC = nrNodesTubes + nrNodesTendrilsIn + nrNodesIn + nrNodesSCC + nrNodesOut + nrNodesTendrilsOut 
         self.nrNodesTubes = nrNodesTubes
@@ -83,7 +82,6 @@ class BowTieNetworkValues:
         self.nrNodesOut = nrNodesOut
         self.nrNodesTendrilsOut = nrNodesTendrilsOut
         self.nrNodesOCC = nrNodesOCC
-        self.nrNodesUnidentified = nrNodesUnidentified
         self.pctWeaklyLCCNodes = 0 if (self.nrNodesAllGraph is None or self.nrNodesAllGraph == 0) else round((self.nrNodesWeaklyLCC / self.nrNodesAllGraph * 100),2)
         self.pctTubeNodes = 0 if (self.nrNodesAllGraph is None or self.nrNodesAllGraph == 0) else round((nrNodesTubes / self.nrNodesAllGraph * 100),2)
         self.pctTendrilsInNodes = 0 if (self.nrNodesAllGraph is None or self.nrNodesAllGraph == 0) else round((nrNodesTendrilsIn / self.nrNodesAllGraph * 100),2)
@@ -103,8 +101,15 @@ class BowTieNetworkValues:
 class BowTieVisualizationValues:
     """
     Base class for that contains values for the bow-tie shape visualization.
+    Parameters
+    ----------
+    hIn : double, default 0
+        Height of the shape for the In component
+    bIn : double, default 0
+        Width of the shape for the In component
+    TODO rest
     """
-    def __init__(self, hIn = 0, bIn = 0, rSCC = 0, hOut = 0, bOut = 0, hOCC = 0, wOCC = 0,
+    def __init__(self, hIn = 0, bIn = 0, rSCC = 0, hOut = 0, bOut = 0, hOCC = 0, bOCC = 0,
         bTIn = 0, hTIn = 0, bTOut = 0, hTOut = 0, bTubes = 0,  hTubes = 0, areaIn = 0,
         areaOut = 0, areaOCC = 0, areaSCC = 0, areaTendrilsIn = 0, areaTendrilsOut = 0, areaTubes = 0):
         self.hTubes = hTubes
@@ -119,7 +124,7 @@ class BowTieVisualizationValues:
         self.hTOut = hTOut
         self.bTOut = bTOut
         self.hOCC = hOCC
-        self.wOCC = wOCC
+        self.bOCC = bOCC
         self.areaTubes = areaTubes
         self.areaTendrilsIn = areaTendrilsIn
         self.areaIn = areaIn
@@ -133,8 +138,6 @@ class BowTieVisualizationValues:
         Prints the BowTieVisualizationValues keys and values as a list
         """
         return "<BowTieVisualizationValues: %s>" % _printDict(self.__dict__)
-        occupiedArea = self.areaTubes + self.areaTendrilsIn + self.areaIn + self.areaSCC + self.areaOut + self.areaTendrilsOut + self.areaOCC
-        print("relative area Tendrils In: ", self.areaTendrilsIn/occupiedArea)
 
 
 class BowTieEnsembleNetworkValues:
@@ -147,19 +150,26 @@ class BowTieEnsembleNetworkValues:
 
     Parameters
     ----------
-    meanNrNodesAllGraph : input integer (default: 0)
-        Total number of nodes in the graph
-    meanNrNodesWeaklyLCC : 
-        TODO
-    meanNrNodesOCC = 0
-    meanNrNodesIn = 0
-    meanNrNodesSCC = 0
-    meanNrNodesOut = 0
-    meanNrNodesTubes = 0 
-    meanNrNodesTendrilsIn = 0 
-    meanNrNodesTendrilsOut = 0
-
-    connectedComponentsSizes = []
+    meanNrNodesAllGraph : double, default: 0
+        Average number of nodes in the graph
+    meanNrNodesWeaklyLCC : double, default: 0
+        Average number of nodes in the largest weakly connected component
+    meanNrNodesTubes : double, default: 0
+        Average number of nodes in the Tubes component
+    meanNrNodesTendrilsIn : double, default: 0
+        Average number of nodes in the Tendrils-In component
+    meanNrNodesIn : double, default: 0
+        Average number of nodes in the In component
+    meanNrNodesSCC : double, default: 0
+        Average number of nodes in the Central Component 
+    meanNrNodesOut : double, default: 0
+        Average number of nodes in the Out component
+    meanNrNodesTendrilsOut : double, default: 0
+        Average number of nodes in the Tendrils-Out component
+    meanNrNodesOCC : double, default: 0
+        Average number of nodes in the Disconnected components
+    connectedComponentsSizes = list of doubles
+        this functionality is not implemented TODO
 
     """
     def __init__(self, 
@@ -172,7 +182,6 @@ class BowTieEnsembleNetworkValues:
                 meanNrNodesOut = 0, 
                 meanNrNodesTendrilsOut = 0, 
                 meanNrNodesOCC = 0, 
-                meanNrNodesUnidentified = 0, 
                 stdNrNodesAllGraph = 0,
                 stdNrNodesWeaklyLCC = 0,
                 stdNrNodesTubes = 0 ,
@@ -182,7 +191,6 @@ class BowTieEnsembleNetworkValues:
                 stdNrNodesOut = 0,
                 stdNrNodesTendrilsOut = 0,
                 stdNrNodesOCC = 0,
-                stdNrNodesUnidentified = 0,
                 connectedComponentsSizes = []):
         self.meanNrNodesAllGraph = meanNrNodesAllGraph
         self.meanNrNodesWeaklyLCC = meanNrNodesWeaklyLCC
@@ -193,7 +201,6 @@ class BowTieEnsembleNetworkValues:
         self.meanNrNodesOut = meanNrNodesOut
         self.meanNrNodesTendrilsOut = meanNrNodesTendrilsOut
         self.meanNrNodesOCC = meanNrNodesOCC
-        self.meanNrNodesUnidentified = meanNrNodesUnidentified
         
         self.stdNrNodesAllGraph = stdNrNodesAllGraph
         self.stdNrNodesWeaklyLCC = stdNrNodesWeaklyLCC
@@ -204,7 +211,6 @@ class BowTieEnsembleNetworkValues:
         self.stdNrNodesOut = stdNrNodesOut
         self.stdNrNodesTendrilsOut = stdNrNodesTendrilsOut
         self.stdNrNodesOCC = stdNrNodesOCC
-        self.stdNrNodesUnidentified = stdNrNodesUnidentified
 
         self.pctWeaklyLCCNodes = 0 if (self.meanNrNodesAllGraph is None or self.meanNrNodesAllGraph == 0) else round((self.meanNrNodesWeaklyLCC / self.meanNrNodesAllGraph * 100),2)
         self.pctTubeNodes = 0 if (self.meanNrNodesAllGraph is None or self.meanNrNodesAllGraph == 0) else round((meanNrNodesTubes / self.meanNrNodesAllGraph * 100),2)
@@ -233,8 +239,7 @@ class BowTieEnsembleNetworkValues:
             nrNodesSCC =  self.meanNrNodesSCC,
             nrNodesOut =  self.meanNrNodesOut,
             nrNodesTendrilsOut = self.meanNrNodesTendrilsOut,
-            nrNodesOCC = self.meanNrNodesOCC,
-            nrNodesUnidentified = self.meanNrNodesUnidentified)
+            nrNodesOCC = self.meanNrNodesOCC)
         return bowTieNetworkValues
 
     
@@ -246,17 +251,16 @@ class BowTieZScores:
 
     Parameters
     ----------
-    TODO
-    zscoreNodesAllGraph : input integer (default: 0)
-    zscoreNodesWeaklyLCC : 
-    zscoreNodesOCC = 0
-    zscoreNodesIn = 0
-    zscoreNodesSCC = 0
-    zscoreNodesOut = 0
-    zscoreNodesTubes = 0 
-    zscoreNodesTendrilsIn = 0 
-    zscoreNodesTendrilsOut = 0
-    connectedComponentsSizes = []
+    zscoreNodesAllGraph : double, default: 0
+    zscoreNodesWeaklyLCC : double, default: 0
+    zscoreNodesOCC : double, default: 0
+    zscoreNodesIn : double, default: 0
+    zscoreNodesSCC : double, default: 0
+    zscoreNodesOut : double, default: 0
+    zscoreNodesTubes : double, default: 0
+    zscoreNodesTendrilsIn : double, default: 0
+    zscoreNodesTendrilsOut : double, default: 0
+    connectedComponentsSizes : double, default: 0
 
     """
     def __init__(self,  
@@ -268,8 +272,7 @@ class BowTieZScores:
             zscoreNodesSCC = 0, 
             zscoreNodesOut = 0, 
             zscoreNodesTendrilsOut = 0, 
-            zscoreNodesOCC = 0, 
-            zscoreNodesUnidentified = 0):
+            zscoreNodesOCC = 0):
         self.zscoreNodesAllGraph = zscoreNodesAllGraph
         self.zscoreNodesWeaklyLCC = zscoreNodesWeaklyLCC
         self.zscoreNodesTubes = zscoreNodesTubes
@@ -279,7 +282,6 @@ class BowTieZScores:
         self.zscoreNodesOut = zscoreNodesOut
         self.zscoreNodesTendrilsOut = zscoreNodesTendrilsOut
         self.zscoreNodesOCC = zscoreNodesOCC
-        self.zscoreNodesUnidentified = zscoreNodesUnidentified
 
     def __repr__(self):
         """
@@ -299,20 +301,13 @@ def getBowTieNetworkValues(gx, debug = False):
     ----------
     gx : Networkx.DiGraph
         path to edgelist file
-    separator : str
-        character separating the nodes
-    weighted : bool
-        is a weight given? if ``True`` it is the last element in the edge
-        (i.e. ``a,b,2``)
-    directed : bool
-        are the edges directed or undirected
-    header: bool
-        if true skip the first row, useful if header row in file
+    debug: bool, default False
+        prints debug information on screen
 
     Returns
     -------
-    Network:
-        a ``Network`` object obtained from the edgelist
+    BowTieNetworkValues:
+        a ``BowTieNetworkValues`` object
     """
     def __printDebug(*val):
         if debug:
@@ -353,7 +348,7 @@ def getBowTieNetworkValues(gx, debug = False):
     nrNodesSCC = SCCn.order()
 
     # get diameter for radius of the ego_graph
-    #TODO ASK maybe too optimistic
+    # TODO unclear if real maximum diameter of calculated...
     graphDiameter = nx.diameter(LCCn.to_undirected())*2
     __printDebug("graphDiameter: ", graphDiameter)
 
@@ -391,7 +386,8 @@ def getBowTieNetworkValues(gx, debug = False):
     nodesTendrilsIn = set()
     nodesTendrilsOut = set()
 
-    while (nrNodesTendrilsIn + nrNodesTubes + nrNodesTendrilsOut < restNodesInitialLenght) and nrIt <100:
+    #nrIt
+    while (nrNodesTendrilsIn + nrNodesTubes + nrNodesTendrilsOut < restNodesInitialLenght) and nrIt <10000:
             nrIt += 1
             __printDebug("restNodes", restNodes)
             for v in restNodes:
@@ -561,116 +557,41 @@ def _getBowTieVisualizationValues(bowTieNetworkValues, debug = False):
 
     #all height are now calculated based on the are of SCC
     if bowTieVisualizationValues.areaSCC > 0:
-    # largestTendrilsIn - Tendrils In have the largest height in the central area
+        # calculate area Tendrils In
         if bowTieNetworkValues.nrNodesTendrilsIn > 0:
             bowTieVisualizationValues.areaTendrilsIn = bowTieNetworkValues.pctTendrilsInNodes * (bowTieVisualizationValues.areaSCC/bowTieNetworkValues.pctSCCNodes)
             bowTieVisualizationValues.hTIn = (bowTieVisualizationValues.areaTendrilsIn/bowTieVisualizationValues.bTIn)
             __printDebug("calc areaTendrilsIn: ", bowTieVisualizationValues.bTIn*bowTieVisualizationValues.hTIn)
-        # calc In
+        # calculate area In
         if (bowTieNetworkValues.nrNodesIn > 0):
             bowTieVisualizationValues.areaIn = bowTieNetworkValues.pctInNodes * (bowTieVisualizationValues.areaSCC/bowTieNetworkValues.pctSCCNodes)
             bowTieVisualizationValues.bIn = ((2 * bowTieVisualizationValues.areaIn) / bowTieVisualizationValues.hIn) 
-        # calc out
+        # calculate area out
         if(bowTieNetworkValues.nrNodesOut>0):
             bowTieVisualizationValues.areaOut = bowTieNetworkValues.pctOutNodes * (bowTieVisualizationValues.areaSCC/bowTieNetworkValues.pctSCCNodes)
             bowTieVisualizationValues.bOut = ((2 * bowTieVisualizationValues.areaOut) / bowTieVisualizationValues.hOut)
-        # calc TendrilOut
+        # calculate area Tendrils Out
         if(bowTieNetworkValues.nrNodesTendrilsOut>0):
             bowTieVisualizationValues.areaTendrilsOut = bowTieNetworkValues.pctTendrilsOutNodes * (bowTieVisualizationValues.areaSCC/bowTieNetworkValues.pctSCCNodes)
             bowTieVisualizationValues.hTOut = (bowTieVisualizationValues.areaTendrilsOut/bowTieVisualizationValues.bTOut)
+        # calculate area OCC and width (widht is horizontal)
+        if(bowTieNetworkValues.nrNodesOCC>0):
+            bowTieVisualizationValues.areaOCC = bowTieNetworkValues.pctOCCNodes * (bowTieVisualizationValues.areaSCC/bowTieNetworkValues.pctSCCNodes)
+            if (bowTieNetworkValues.pctOCCNodes <= 20):
+                # draw ellipse
+                bowTieVisualizationValues.bOCC = (4 * bowTieVisualizationValues.areaOCC) / (math.pi * bowTieVisualizationValues.hOCC)
+            else:
+                # draw rectangle
+                bowTieVisualizationValues.bOCC = bowTieVisualizationValues.areaOCC/bowTieVisualizationValues.hOCC
+        # calculate area Tubes
+        if(bowTieNetworkValues.nrNodesTubes>0):
+            bowTieVisualizationValues.areaTubes = bowTieNetworkValues.pctTubeNodes * (bowTieVisualizationValues.areaSCC/bowTieNetworkValues.pctSCCNodes)
+            bowTieVisualizationValues.bTubes = bowTieVisualizationValues.areaTubes/bowTieVisualizationValues.hTubes
 
     else:
         #TODO
         print("Undefined action for graphs without SCC")
-
-
-    """
-    # get heights
-    if largestSCC:
-        #TODO
-        maxPctArea = 0
-    else:
-        if (largestInSide):
-            if (largestTendrilsIn):
-                # largestTendrilsIn - Tendrils In have the largest height in the central area
-                bowTieVisualizationValues.hTIn = 1 - bowTieVisualizationValues.hOCC - bowTieVisualizationValues.hTubes
-                bowTieVisualizationValues.areaTendrilsIn = bowTieVisualizationValues.bTIn * bowTieVisualizationValues.hTIn
-                # calc TendrilOut
-                if(bowTieNetworkValues.nrNodesTendrilsOut>0):
-                    bowTieVisualizationValues.areaTendrilsOut = bowTieNetworkValues.pctTendrilsOutNodes * (bowTieVisualizationValues.areaTendrilsIn/bowTieNetworkValues.pctTendrilsInNodes)
-                    bowTieVisualizationValues.hTOut = (bowTieVisualizationValues.areaTendrilsOut/bowTieVisualizationValues.bTOut) /100
-                # calc In
-                if (bowTieNetworkValues.nrNodesIn > 0):
-                    bowTieVisualizationValues.areaIn = bowTieNetworkValues.pctInNodes * (bowTieVisualizationValues.areaTendrilsIn/bowTieNetworkValues.pctTendrilsInNodes)
-                    bowTieVisualizationValues.bIn = ((2 * bowTieVisualizationValues.areaIn) / bowTieVisualizationValues.hIn) /100
-                # calc out
-                if(bowTieNetworkValues.nrNodesOut>0):
-                    bowTieVisualizationValues.areaOut = bowTieNetworkValues.pctOutNodes * (bowTieVisualizationValues.areaTendrilsIn/bowTieNetworkValues.pctTendrilsInNodes)
-                    bowTieVisualizationValues.bOut = ((2 * bowTieVisualizationValues.areaOut) / bowTieVisualizationValues.hOut)/100
-            else:
-                bowTieVisualizationValues.bIn = 1 - bowTieVisualizationValues.hOCC - bowTieVisualizationValues.hTubes
-                bowTieVisualizationValues.areaIn = bowTieVisualizationValues.bIn * bowTieVisualizationValues.hIn / 2
-                # calc out
-                if(bowTieNetworkValues.nrNodesOut>0):
-                    bowTieVisualizationValues.bOut = (2 * bowTieVisualizationValues.areaIn * bowTieNetworkValues.pctOutNodes) / (bowTieVisualizationValues.hOut * bowTieNetworkValues.pctInNodes)
-                    bowTieVisualizationValues.areaOut = bowTieVisualizationValues.bOut * bowTieVisualizationValues.hOut / 2
-                # calc tendrils in
-                if(bowTieNetworkValues.nrNodesTendrilsIn>0):
-                    bowTieVisualizationValues.areaTendrilsIn = bowTieVisualizationValues.areaIn * bowTieNetworkValues.pctTendrilsInNodes / bowTieNetworkValues.pctInNodes
-                    bowTieVisualizationValues.hTIn = bowTieVisualizationValues.areaTendrilsIn / bowTieVisualizationValues.bTIn
-                # calc tendrils out
-                if(bowTieNetworkValues.nrNodesTendrilsOut>0):
-                    bowTieVisualizationValues.areaTendrilsOut = bowTieVisualizationValues.areaIn * bowTieNetworkValues.pctTendrilsOutNodes / bowTieNetworkValues.pctInNodes
-                    bowTieVisualizationValues.hTOut = bowTieVisualizationValues.areaTendrilsOut / bowTieVisualizationValues.bTOut
-
-        else:
-            if (largestTendrilsOut):
-                bowTieVisualizationValues.hTOut = 1 - bowTieVisualizationValues.hOCC - bowTieVisualizationValues.hTubes  
-                bowTieVisualizationValues.areaTendrilsOut = bowTieVisualizationValues.bTOut * bowTieVisualizationValues.hTOut
-                # calc TendrilIn
-                if(bowTieNetworkValues.nrNodesTendrilsIn>0):
-                    bowTieVisualizationValues.areaTendrilsIn = bowTieVisualizationValues.areaTendrilsOut * bowTieNetworkValues.pctTendrilsInNodes/bowTieNetworkValues.pctTendrilsOutNodes
-                    bowTieVisualizationValues.hTIn = bowTieVisualizationValues.areaTendrilsIn/bowTieVisualizationValues.bIn
-                # calc In
-                if(bowTieNetworkValues.nrNodesIn>0):
-                    bowTieVisualizationValues.bIn = (2 * bowTieVisualizationValues.areaTendrilsIn * bowTieNetworkValues.pctInNodes) / (bowTieVisualizationValues.hIn * bowTieNetworkValues.pctTendrilsInNodes)
-                    bowTieVisualizationValues.areaIn = bowTieVisualizationValues.bIn * bowTieVisualizationValues.hIn / 2
-                # calc out
-                bowTieVisualizationValues.bOut = (2 * bowTieVisualizationValues.areaOut * bowTieNetworkValues.pctOutNodes) / (bowTieVisualizationValues.hOut * bowTieNetworkValues.pctOutNodes)
-                bowTieVisualizationValues.areaOut = bowTieVisualizationValues.bOut * bowTieVisualizationValues.hOut / 2
-
-            else:
-                bowTieVisualizationValues.bOut = 1 - bowTieVisualizationValues.hOCC - bowTieVisualizationValues.hTubes 
-                bowTieVisualizationValues.areaOut  = bowTieVisualizationValues.bOut * bowTieVisualizationValues.hOut / 2
-                # calc In
-                if(bowTieNetworkValues.nrNodesIn>0):
-                    bowTieVisualizationValues.bIn = (2 * bowTieVisualizationValues.areaOut * bowTieNetworkValues.pctInNodes) / (bowTieVisualizationValues.hIn * bowTieNetworkValues.pctOutNodes)
-                    bowTieVisualizationValues.areaIn = bowTieVisualizationValues.bIn * bowTieVisualizationValues.hIn / 2
-                # calc tendrils in
-                if(bowTieNetworkValues.nrNodesTendrilsIn>0):
-                    bowTieVisualizationValues.areaTendrilsIn = bowTieVisualizationValues.areaIn * bowTieNetworkValues.pctTendrilsInNodes / bowTieNetworkValues.pctInNodes
-                    bowTieVisualizationValues.hTIn = bowTieVisualizationValues.areaTendrilsIn / bowTieVisualizationValues.bTIn
-                # calc tendrils out
-                if(bowTieNetworkValues.nrNodesTendrilsOut>0):
-                    bowTieVisualizationValues.areaTendrilsOut = bowTieVisualizationValues.areaOut * bowTieNetworkValues.pctTendrilsOutNodes / bowTieNetworkValues.pctOutNodes
-                    bowTieVisualizationValues.hTOut = bowTieVisualizationValues.areaTendrilsOut / bowTieVisualizationValues.bTOut
-    """
-    # get area of OCC and width (widht is horizontal)
-    if(bowTieNetworkValues.nrNodesOCC>0):
-        if(bowTieNetworkValues.nrNodesIn>0):
-            bowTieVisualizationValues.areaOCC = bowTieVisualizationValues.areaIn * bowTieNetworkValues.pctOCCNodes/bowTieNetworkValues.pctInNodes
-        elif(bowTieNetworkValues.nrNodesOut>0):
-            bowTieVisualizationValues.areaOCC = bowTieVisualizationValues.areaOut * bowTieNetworkValues.pctOCCNodes/bowTieNetworkValues.pctOutNodes
-        else:
-            #TODO
-            bowTieVisualizationValues.areaOCC = 0
-        bowTieVisualizationValues.wOCC = (4 * bowTieVisualizationValues.areaOCC) / (math.pi * bowTieVisualizationValues.hOCC)
-
-
-    # get area of Tubes
-    if(bowTieNetworkValues.nrNodesTubes>0):
-        bowTieVisualizationValues.areaTubes = bowTieVisualizationValues.areaIn * bowTieNetworkValues.pctTubeNodes/bowTieNetworkValues.pctInNodes
-        bowTieVisualizationValues.bTubes = bowTieVisualizationValues.areaTubes/bowTieVisualizationValues.hTubes
+        raise ValueError('Undefined action for graphs without SCC')
 
     return bowTieVisualizationValues
 
@@ -688,7 +609,7 @@ def plotPieNetworkValues(bowTieNetworkValues):
     plt.show()
 
 
-def plotBowTie(bowTieNetworkValues, sizeFactor = 2, saveSVGfile = False, svgFileSufix = "0", printVisualizationValues = False):
+def plotBowTie(bowTieNetworkValues, sizeFactor = 2, saveSVGfile = False, svgFileSuffix = "0", printVisualizationValues = False, showAxis = False):
     """
     Plots the bow tie shape visualization based on the network characteristics.
     Parameters
@@ -701,8 +622,7 @@ def plotBowTie(bowTieNetworkValues, sizeFactor = 2, saveSVGfile = False, svgFile
         Size of the plot related to the standard ploting in the python client
     Returns
     -------
-    dictBowTieVisualizationValues : plot
-        dictBowTieVisualizationValues plot ??
+    empty
     """
     from matplotlib.patches import Circle, Polygon, Ellipse, Arrow
     from matplotlib.collections import PatchCollection
@@ -713,7 +633,8 @@ def plotBowTie(bowTieNetworkValues, sizeFactor = 2, saveSVGfile = False, svgFile
     # Fixing random state for reproducibility
     np.random.seed(19101101)
     fig, ax = plt.subplots()
-    #plt.axis("off")
+    if not showAxis:
+        plt.axis("off")
     patches = []
 
     # size
@@ -777,28 +698,30 @@ def plotBowTie(bowTieNetworkValues, sizeFactor = 2, saveSVGfile = False, svgFile
     # Rectangle Tubes
     RTubesx = Vx
     if(bowTieNetworkValues.nrNodesTubes>0):
-        coordsTInStr = str(RTubesx + bowTieVisualizationValues.bTubes/2) + " " + str(1) + ";" + str(RTubesx + bowTieVisualizationValues.bTubes/2) + " "+ str(1 - bowTieVisualizationValues.hTubes) + ";" + str(RTubesx - bowTieVisualizationValues.bTubes/2) + " " + str(1 - bowTieVisualizationValues.hTubes) + ";" + str(RTubesx - bowTieVisualizationValues.bTubes/2) + " " + str(1)
-        coordsTIn = np.matrix(coordsTInStr)
-        polygon = Polygon(coordsTIn, True)
+        coordsTubesStr = str(RTubesx + bowTieVisualizationValues.bTubes/2) + " " + str(1) + ";" + str(RTubesx + bowTieVisualizationValues.bTubes/2) + " "+ str(1 - bowTieVisualizationValues.hTubes) + ";" + str(RTubesx - bowTieVisualizationValues.bTubes/2) + " " + str(1 - bowTieVisualizationValues.hTubes) + ";" + str(RTubesx - bowTieVisualizationValues.bTubes/2) + " " + str(1)
+        coordsTubes = np.matrix(coordsTubesStr)
+        polygon = Polygon(coordsTubes, True)
         patches.append(polygon)
         labelTubes = str("Tubes\n") + str(bowTieNetworkValues.pctTubeNodes) + str(" %\n n=") + str(bowTieNetworkValues.nrNodesTubes)
         __plotLabel(RTubesx, 1 - bowTieVisualizationValues.hTubes/2,  labelTubes, alineation="center")
 
-    #TODO
+    # OCC 
     labelOCC = str("OCC\n") + str(bowTieNetworkValues.pctOCCNodes) + str(" %\n n=") + str(bowTieNetworkValues.nrNodesOCC)
-
     if(bowTieNetworkValues.nrNodesOCC>0):
-        if (bowTieNetworkValues.pctOCCNodes < 20):
-            # elipse
-            ellipse = Ellipse((Vx, 0.2), 0.2, 0.1)
+        if (bowTieNetworkValues.pctOCCNodes <= 20):
+            # draw ellipse
+            ellipse = Ellipse((Vx, 0.2), bowTieVisualizationValues.bOCC, bowTieVisualizationValues.hOCC)
             patches.append(ellipse)
             __plotLabel(Vx, 0.2,  labelOCC, alineation="center")
         else:
-            RTubesx = Vx
-            coordsTInStr = str(RTubesx + bowTieVisualizationValues.hOCC/2) + " " + str(1) + ";" + str(RTubesx + bowTieVisualizationValues.wOCC/2) + " "+ str(1 - bowTieVisualizationValues.hTubes) + ";" + str(RTubesx - bowTieVisualizationValues.bTubes/2) + " " + str(1 - bowTieVisualizationValues.hTubes) + ";" + str(RTubesx - bowTieVisualizationValues.bTubes/2) + " " + str(1)
-            coordsTIn = np.matrix(coordsTInStr)
-            polygon = Polygon(coordsTIn, True)
+            # draw rectangle
+            ROCCx = bowTieVisualizationValues.hOCC
+            coordsOCCStr = str((1 - bowTieVisualizationValues.bOCC)/2) + " " + str(ROCCx) + ";" + str((1 - bowTieVisualizationValues.bOCC)/2) + " "+ str(ROCCx - bowTieVisualizationValues.hOCC) + ";" + str((1 - bowTieVisualizationValues.bOCC)/2 + bowTieVisualizationValues.bOCC) + " " + str(ROCCx - bowTieVisualizationValues.hOCC) + ";" + str((1 - bowTieVisualizationValues.bOCC)/2 + bowTieVisualizationValues.bOCC) + " " + str(ROCCx) 
+            coordsOCC = np.matrix(coordsOCCStr)
+            print(coordsOCCStr)
+            polygon = Polygon(coordsOCC, True)
             patches.append(polygon)
+            __plotLabel(Vx, (bowTieVisualizationValues.hOCC)/2,  labelOCC, alineation="center")
 
 
     # Arrows for Tubes rectangle
@@ -823,7 +746,7 @@ def plotBowTie(bowTieNetworkValues, sizeFactor = 2, saveSVGfile = False, svgFile
     ax.add_collection(p)
 
     if saveSVGfile:
-        imgName = str("bowTie" + str(svgFileSufix) + str(datetime.today().strftime("%d-%m-%y %H %M %S")) + ".svg")
+        imgName = str("bowTie" + str(svgFileSuffix) + str(datetime.today().strftime("%d-%m-%y %H %M %S")) + ".svg")
         plt.savefig(imgName)
     plt.show()
 
@@ -834,7 +757,7 @@ def plotBowTie(bowTieNetworkValues, sizeFactor = 2, saveSVGfile = False, svgFile
 
 
 
-def showBowTieVisualization(gx, plotPieValues = True, printBowTieNetworkValues = True, saveSVGfile = False, plotSizeFactor = 2, svgFileSufix = " ", printVisualizationValues = False):
+def showBowTieVisualization(gx, plotPieValues = True, printBowTieNetworkValues = True, saveSVGfile = False, plotSizeFactor = 2, svgFileSuffix = " ", printVisualizationValues = False):
     """
     Displays the Bow Tie visualization of the given network with other options.
     Parameters
@@ -847,8 +770,10 @@ def showBowTieVisualization(gx, plotPieValues = True, printBowTieNetworkValues =
         Saves a svg file of the Bow Tie plot visualization on the disc.
     plotSizeFactor = number, default 2
         Based on the default size of the plot it multiplies it size
-    svgFileSufix = string, default " "
-        Sufix for the svg file of the plot visualization
+    svgFileSuffix = string, default " "
+        Suffix for the svg file of the plot visualization
+    printVisualizationValues : boolean, default False
+        Prints the list of visualization values that was used to draw the bow-tie plot
     Returns
     -------
     bowTieNetworkValues : BowTieNetworkValues object
@@ -862,7 +787,7 @@ def showBowTieVisualization(gx, plotPieValues = True, printBowTieNetworkValues =
 
     if printBowTieNetworkValues:
         print(bowTieNetworkValues)
-    plotBowTie(bowTieNetworkValues, sizeFactor=plotSizeFactor, saveSVGfile=saveSVGfile, svgFileSufix=svgFileSufix, printVisualizationValues = printVisualizationValues)
+    plotBowTie(bowTieNetworkValues, sizeFactor=plotSizeFactor, saveSVGfile=saveSVGfile, svgFileSuffix=svgFileSuffix, printVisualizationValues = printVisualizationValues)
     
     return bowTieNetworkValues
 
@@ -878,11 +803,11 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration", deb
         Networkx DiGraph
     samples : number of graph in the ensamble
         Name of the 
-    model : "configuration", "ER", ""
+    model : "configuration", "ER", default: "configuration",
         Model with wich the graphs will be created, valid modesl are:
         "configuration" : directed_configuration_model
-        "ER" : Erdős-Rényi Gnp graph
-        default is "configuration", this model will be used if no other valid name is given.
+        "ER" : Erdős-Rényi Gnp graph fast_gnp_random_graph
+        "configuration"  will be used if no other valid name is given.
     Returns
     -------
     R : BowTieEnsembleNetworkValues
@@ -907,7 +832,6 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration", deb
     resultNodesOut = []
     resultNodesTendrilsOut = []
     resultNodesOCC = []
-    resultNodesUnidentified = []
 
     if (model == "ER"):
         print("Gnp values. n:",n, ", p:", p)
@@ -931,7 +855,6 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration", deb
         resultNodesOut.append(btV.nrNodesOut)
         resultNodesTendrilsOut.append(btV.nrNodesTendrilsOut)
         resultNodesOCC.append(btV.nrNodesOCC)
-        resultNodesUnidentified.append(btV.nrNodesUnidentified)
 
     __printDebug("Result Nodes All Graph: ", resultsNodesAllGraph)
 
@@ -946,7 +869,6 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration", deb
         meanNrNodesOut = np.mean(resultNodesOut, dtype=np.float64), 
         meanNrNodesTendrilsOut = np.mean(resultNodesTendrilsOut, dtype=np.float64), 
         meanNrNodesOCC = np.mean(resultNodesOCC, dtype=np.float64), 
-        meanNrNodesUnidentified = np.mean(resultNodesUnidentified, dtype=np.float64), 
         stdNrNodesAllGraph = np.std(resultsNodesAllGraph, dtype=np.float64), 
         stdNrNodesWeaklyLCC = np.std(reusltNodesWeaklyLCC, dtype=np.float64), 
         stdNrNodesTubes = np.std(resultNodesTubes, dtype=np.float64), 
@@ -955,8 +877,7 @@ def getEnsambleBowTieNetworkValues(gx, samples = 5, model = "configuration", deb
         stdNrNodesSCC = np.std(resultNodesSCC, dtype=np.float64), 
         stdNrNodesOut = np.std(resultNodesOut, dtype=np.float64), 
         stdNrNodesTendrilsOut = np.std(resultNodesTendrilsOut, dtype=np.float64), 
-        stdNrNodesOCC = np.std(resultNodesOCC, dtype=np.float64), 
-        stdNrNodesUnidentified = np.std(resultNodesUnidentified, dtype=np.float64)
+        stdNrNodesOCC = np.std(resultNodesOCC, dtype=np.float64) 
     )
 
     return bowTieEnsembleNetworkValues
@@ -980,14 +901,13 @@ def calcZscores (bowTieNetworkValues, bowTieEnsembleNetworkValues):
     bowTieZScores.zscoreNodesOut = 0 if (bowTieEnsembleNetworkValues.stdNrNodesOut == 0) else (bowTieNetworkValues.nrNodesOut - bowTieEnsembleNetworkValues.meanNrNodesOut) / bowTieEnsembleNetworkValues.stdNrNodesOut
     bowTieZScores.zscoreNodesTendrilsOut = 0 if (bowTieEnsembleNetworkValues.stdNrNodesTendrilsOut == 0) else (bowTieNetworkValues.nrNodesTendrilsOut - bowTieEnsembleNetworkValues.meanNrNodesTendrilsOut) / bowTieEnsembleNetworkValues.stdNrNodesTendrilsOut
     bowTieZScores.zscoreNodesOCC = 0 if (bowTieEnsembleNetworkValues.stdNrNodesOCC == 0) else (bowTieNetworkValues.nrNodesOCC - bowTieEnsembleNetworkValues.meanNrNodesOCC) / bowTieEnsembleNetworkValues.stdNrNodesOCC
-    bowTieZScores.zscoreNodesUnidentified = 0 if (bowTieEnsembleNetworkValues.stdNrNodesUnidentified == 0) else (bowTieNetworkValues.nrNodesUnidentified - bowTieEnsembleNetworkValues.meanNrNodesUnidentified) / bowTieEnsembleNetworkValues.stdNrNodesUnidentified
 
     return bowTieZScores
 
 
 def showBowTieVisualizationWithEnsamble(gx, samples = 5, model = "configuration", plotPieValues = True, printBowTieNetworkValues = True, saveSVGfile = False, plotSizeFactor = 2, printVisualizationValues=False):
     print("---------------------------- Original graph ----------------------------")
-    bowTieNetworkValues = showBowTieVisualization(gx = gx, plotPieValues=plotPieValues, saveSVGfile=saveSVGfile, plotSizeFactor=plotSizeFactor, svgFileSufix="Original", printVisualizationValues=printVisualizationValues)
+    bowTieNetworkValues = showBowTieVisualization(gx = gx, plotPieValues=plotPieValues, saveSVGfile=saveSVGfile, plotSizeFactor=plotSizeFactor, svgFileSuffix="Original", printVisualizationValues=printVisualizationValues)
 
     print("---------------------------- Ensamble values graph ----------------------------")
     ensambleBowTieNewtorkValues = getEnsambleBowTieNetworkValues(gx, samples = samples, model = model)
@@ -1002,7 +922,7 @@ def showBowTieVisualizationWithEnsamble(gx, samples = 5, model = "configuration"
     zscores = calcZscores (bowTieNetworkValues, ensambleBowTieNewtorkValues)
     print(zscores)
     
-    plotBowTie(averageEnsambleBowTieNetworkValues, sizeFactor=plotSizeFactor, saveSVGfile=saveSVGfile, svgFileSufix="Ensamble")
+    plotBowTie(averageEnsambleBowTieNetworkValues, sizeFactor=plotSizeFactor, saveSVGfile=saveSVGfile, svgFileSuffix="Ensamble")
     if printVisualizationValues:
         print(_getBowTieVisualizationValues(averageEnsambleBowTieNetworkValues))
 
