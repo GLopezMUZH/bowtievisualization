@@ -175,6 +175,30 @@ class BowTieNetworkValues:
         """
         return "<BowTieNetworkValues: %s>" % _print_dict(self.__dict__)
 
+    def get_nrNodesTubes(self):
+        return self.nrNodesTubes
+
+    def get_nrNodesTendrilsIn(self):
+        return self.nrNodesTendrilsIn
+
+    def get_nr_nodes_in(self):
+        return self.nr_nodes_in
+
+    def get_nrNodesSCC(self):
+        return self.nrNodesSCC
+
+    def get_nrNodesOut(self):
+        return self.nrNodesOut
+
+    def get_nrNodesTendrilsOut(self):
+        return self.nrNodesTendrilsOut
+
+    def get_nr_nodes_OCC(self):
+        return self.nr_nodes_OCC
+
+    def get_connectedComponentsSizes(self):
+        return self.connectedComponentsSizes
+
 
 class BowTieVisualizationValues:
     """
@@ -432,7 +456,7 @@ class BowTieZScores:
         return "<BowTieZScores: %s>" % _print_dict(self.__dict__)
 
 
-def getBowTieNetworkValues(gx, debug=False):
+def getBowTieNetworkValues(gx, debug=False) -> BowTieNetworkValues:
     # TODO validate for fully connected network (0 values...)
     """
     From a given Networkx.DiGraph, it calculates values for the Bow Tie based
