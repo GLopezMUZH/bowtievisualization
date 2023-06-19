@@ -173,7 +173,7 @@ class BowTieNetworkValues:
         """
         Prints the BowTieNetworkValues keys and values as a list
         """
-        return "<BowTieNetworkValues: %s>" % _printDict(self.__dict__)
+        return "<BowTieNetworkValues: %s>" % _print_dict(self.__dict__)
 
 
 class BowTieVisualizationValues:
@@ -236,7 +236,7 @@ class BowTieVisualizationValues:
         """
         Prints the BowTieVisualizationValues keys and values as a list
         """
-        return "<BowTieVisualizationValues: %s>" % _printDict(self.__dict__)
+        return "<BowTieVisualizationValues: %s>" % _print_dict(self.__dict__)
 
 
 class BowTieEnsembleNetworkValues:
@@ -364,7 +364,7 @@ class BowTieEnsembleNetworkValues:
         """
         Prints the BowTieEnsembleNetworkValues keys and values as a list
         """
-        return "<BowTieEnsembleNetworkValues: %s>" % _printDict(self.__dict__)
+        return "<BowTieEnsembleNetworkValues: %s>" % _print_dict(self.__dict__)
 
     def toBowTieNetworkValues(self):
         """
@@ -429,7 +429,7 @@ class BowTieZScores:
         """
         Prints the BowTieZScores keys and values as a list
         """
-        return "<BowTieZScores: %s>" % _printDict(self.__dict__)
+        return "<BowTieZScores: %s>" % _print_dict(self.__dict__)
 
 
 def getBowTieNetworkValues(gx, debug=False):
@@ -940,7 +940,7 @@ def plotBowTie(
             + str(" %\n n=")
             + str(bowTieNetworkValues.nrNodesTendrilsIn)
         )
-        __plotLabel(
+        __plot_label(
             RTinx,
             YAxe - bowTieVisualizationValues.hTIn / 2 - 0.02,
             labelTIn,
@@ -972,7 +972,7 @@ def plotBowTie(
             + str(" %\n n=")
             + str(bowTieNetworkValues.nrNodesIn)
         )
-        __plotLabel(
+        __plot_label(
             Ax + bowTieVisualizationValues.hIn / 2, YAxe, labelIn, alineation="center"
         )  # TODO optimization label according to shape size...
 
@@ -987,7 +987,7 @@ def plotBowTie(
             + str(" %\n n=")
             + str(bowTieNetworkValues.nrNodesSCC)
         )
-        __plotLabel(Vx, YAxe, labelSCC, alineation="center")
+        __plot_label(Vx, YAxe, labelSCC, alineation="center")
 
     # Triangle OUT
     AOx = Vx + bowTieVisualizationValues.rSCC
@@ -1014,7 +1014,7 @@ def plotBowTie(
             + str(" %\n n=")
             + str(bowTieNetworkValues.nrNodesOut)
         )
-        __plotLabel(
+        __plot_label(
             AOx + bowTieVisualizationValues.hOut / 2,
             YAxe,
             labelOut,
@@ -1050,7 +1050,7 @@ def plotBowTie(
             + str(" %\n n=")
             + str(bowTieNetworkValues.nrNodesTendrilsOut)
         )
-        __plotLabel(
+        __plot_label(
             RTOutx, YAxe - bowTieVisualizationValues.hTOut / 2 - 0.02, labelTOut
         )
 
@@ -1083,7 +1083,7 @@ def plotBowTie(
             + str(" %\n n=")
             + str(bowTieNetworkValues.nrNodesTubes)
         )
-        __plotLabel(
+        __plot_label(
             RTubesx,
             1 - bowTieVisualizationValues.hTubes / 2,
             labelTubes,
@@ -1106,7 +1106,7 @@ def plotBowTie(
                 bowTieVisualizationValues.hOCC,
             )
             patches.append(ellipse)
-            __plotLabel(Vx, 0.2, labelOCC, alineation="center")
+            __plot_label(Vx, 0.2, labelOCC, alineation="center")
         else:
             # draw rectangle
             ROCCx = bowTieVisualizationValues.hOCC
@@ -1137,7 +1137,7 @@ def plotBowTie(
             print(coordsOCCStr)
             polygon = Polygon(coordsOCC, True)
             patches.append(polygon)
-            __plotLabel(
+            __plot_label(
                 Vx, (bowTieVisualizationValues.hOCC) / 2, labelOCC, alineation="center"
             )
 
