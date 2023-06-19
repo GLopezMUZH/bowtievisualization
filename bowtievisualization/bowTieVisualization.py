@@ -32,7 +32,7 @@ import time
 from datetime import datetime
 
 
-def _printDict(dic):
+def _print_dict(dic):
     """
     prints the keys and values of a dictionary in a readable list
     """
@@ -48,7 +48,7 @@ def _calcPYgiven2PointsAndPx(Ax, Ay, Bx, By, Px):
     return Py
 
 
-def __plotLabel(x, y, text, alineation="left", fontSize=12):
+def __plot_label(x, y, text, alineation="left", fontSize=12):
     y = y - 0.025  # shift y-value for label so that it's below the artist
     plt.text(
         x,
