@@ -74,7 +74,7 @@ class BowTieNetworkValues:
         Total number of nodes in the Tubes component
     nrNodesTendrilsIn : input integer (default: 0)
         Total number of nodes in the Tendrils-In component
-    nrNodesIn : input integer (default: 0)
+    nr_nodes_in : input integer (default: 0)
         Total number of nodes in the In component
     nrNodesSCC : input integer (default: 0)
         Total number of nodes in the Central Component component
@@ -82,7 +82,7 @@ class BowTieNetworkValues:
         Total number of nodes in the Out component
     nrNodesTendrilsOut : input integer (default: 0)
         Total number of nodes in the Tendrils-Out component
-    nrNodesOCC : input integer (default: 0)
+    nr_nodes_OCC : input integer (default: 0)
         Total number of nodes in the Disconnected Components
     connectedComponentsSizes = list of integers, default empty list
 
@@ -92,37 +92,37 @@ class BowTieNetworkValues:
         self,
         nrNodesTubes=0,
         nrNodesTendrilsIn=0,
-        nrNodesIn=0,
+        nr_nodes_in=0,
         nrNodesSCC=0,
         nrNodesOut=0,
         nrNodesTendrilsOut=0,
-        nrNodesOCC=0,
+        nr_nodes_OCC=0,
         connectedComponentsSizes=[],
     ):
         self.nrNodesAllGraph = (
             nrNodesTubes
             + nrNodesTendrilsIn
-            + nrNodesIn
+            + nr_nodes_in
             + nrNodesSCC
             + nrNodesOut
             + nrNodesTendrilsOut
-            + nrNodesOCC
+            + nr_nodes_OCC
         )
         self.nrNodesWeaklyLCC = (
             nrNodesTubes
             + nrNodesTendrilsIn
-            + nrNodesIn
+            + nr_nodes_in
             + nrNodesSCC
             + nrNodesOut
             + nrNodesTendrilsOut
         )
         self.nrNodesTubes = nrNodesTubes
         self.nrNodesTendrilsIn = nrNodesTendrilsIn
-        self.nrNodesIn = nrNodesIn
+        self.nr_nodes_in = nr_nodes_in
         self.nrNodesSCC = nrNodesSCC
         self.nrNodesOut = nrNodesOut
         self.nrNodesTendrilsOut = nrNodesTendrilsOut
-        self.nrNodesOCC = nrNodesOCC
+        self.nr_nodes_OCC = nr_nodes_OCC
         self.pctWeaklyLCCNodes = (
             0
             if (self.nrNodesAllGraph is None or self.nrNodesAllGraph == 0)
@@ -141,7 +141,7 @@ class BowTieNetworkValues:
         self.pctInNodes = (
             0
             if (self.nrNodesAllGraph is None or self.nrNodesAllGraph == 0)
-            else round((nrNodesIn / self.nrNodesAllGraph * 100), 2)
+            else round((nr_nodes_in / self.nrNodesAllGraph * 100), 2)
         )
         self.pctSCCNodes = (
             0
@@ -161,7 +161,7 @@ class BowTieNetworkValues:
         self.pctOCCNodes = (
             0
             if (self.nrNodesAllGraph is None or self.nrNodesAllGraph == 0)
-            else round((nrNodesOCC / self.nrNodesAllGraph * 100), 2)
+            else round((nr_nodes_OCC / self.nrNodesAllGraph * 100), 2)
         )
         self.connectedComponentsSizes = (
             []
@@ -257,7 +257,7 @@ class BowTieEnsembleNetworkValues:
         Average number of nodes in the Tubes component
     meanNrNodesTendrilsIn : double, default: 0
         Average number of nodes in the Tendrils-In component
-    meanNrNodesIn : double, default: 0
+    meannr_nodes_in : double, default: 0
         Average number of nodes in the In component
     meanNrNodesSCC : double, default: 0
         Average number of nodes in the Central Component
@@ -265,7 +265,7 @@ class BowTieEnsembleNetworkValues:
         Average number of nodes in the Out component
     meanNrNodesTendrilsOut : double, default: 0
         Average number of nodes in the Tendrils-Out component
-    meanNrNodesOCC : double, default: 0
+    meannr_nodes_OCC : double, default: 0
         Average number of nodes in the Disconnected components
     connectedComponentsSizes = list of doubles
         this functionality is not implemented TODO
@@ -278,41 +278,41 @@ class BowTieEnsembleNetworkValues:
         meanNrNodesWeaklyLCC=0,
         meanNrNodesTubes=0,
         meanNrNodesTendrilsIn=0,
-        meanNrNodesIn=0,
+        meannr_nodes_in=0,
         meanNrNodesSCC=0,
         meanNrNodesOut=0,
         meanNrNodesTendrilsOut=0,
-        meanNrNodesOCC=0,
+        meannr_nodes_OCC=0,
         stdNrNodesAllGraph=0,
         stdNrNodesWeaklyLCC=0,
         stdNrNodesTubes=0,
         stdNrNodesTendrilsIn=0,
-        stdNrNodesIn=0,
+        stdnr_nodes_in=0,
         stdNrNodesSCC=0,
         stdNrNodesOut=0,
         stdNrNodesTendrilsOut=0,
-        stdNrNodesOCC=0,
+        stdnr_nodes_OCC=0,
         connectedComponentsSizes=[],
     ):
         self.meanNrNodesAllGraph = meanNrNodesAllGraph
         self.meanNrNodesWeaklyLCC = meanNrNodesWeaklyLCC
         self.meanNrNodesTubes = meanNrNodesTubes
         self.meanNrNodesTendrilsIn = meanNrNodesTendrilsIn
-        self.meanNrNodesIn = meanNrNodesIn
+        self.meannr_nodes_in = meannr_nodes_in
         self.meanNrNodesSCC = meanNrNodesSCC
         self.meanNrNodesOut = meanNrNodesOut
         self.meanNrNodesTendrilsOut = meanNrNodesTendrilsOut
-        self.meanNrNodesOCC = meanNrNodesOCC
+        self.meannr_nodes_OCC = meannr_nodes_OCC
 
         self.stdNrNodesAllGraph = stdNrNodesAllGraph
         self.stdNrNodesWeaklyLCC = stdNrNodesWeaklyLCC
         self.stdNrNodesTubes = stdNrNodesTubes
         self.stdNrNodesTendrilsIn = stdNrNodesTendrilsIn
-        self.stdNrNodesIn = stdNrNodesIn
+        self.stdnr_nodes_in = stdnr_nodes_in
         self.stdNrNodesSCC = stdNrNodesSCC
         self.stdNrNodesOut = stdNrNodesOut
         self.stdNrNodesTendrilsOut = stdNrNodesTendrilsOut
-        self.stdNrNodesOCC = stdNrNodesOCC
+        self.stdnr_nodes_OCC = stdnr_nodes_OCC
 
         self.pctWeaklyLCCNodes = (
             0
@@ -332,7 +332,7 @@ class BowTieEnsembleNetworkValues:
         self.pctInNodes = (
             0
             if (self.meanNrNodesAllGraph is None or self.meanNrNodesAllGraph == 0)
-            else round((meanNrNodesIn / self.meanNrNodesAllGraph * 100), 2)
+            else round((meannr_nodes_in / self.meanNrNodesAllGraph * 100), 2)
         )
         self.pctSCCNodes = (
             0
@@ -352,7 +352,7 @@ class BowTieEnsembleNetworkValues:
         self.pctOCCNodes = (
             0
             if (self.meanNrNodesAllGraph is None or self.meanNrNodesAllGraph == 0)
-            else round((meanNrNodesOCC / self.meanNrNodesAllGraph * 100), 2)
+            else round((meannr_nodes_OCC / self.meanNrNodesAllGraph * 100), 2)
         )
         self.connectedComponentsSizes = (
             []
@@ -373,11 +373,11 @@ class BowTieEnsembleNetworkValues:
         bowTieNetworkValues = BowTieNetworkValues(
             nrNodesTubes=self.meanNrNodesTubes,
             nrNodesTendrilsIn=self.meanNrNodesTendrilsIn,
-            nrNodesIn=self.meanNrNodesIn,
+            nr_nodes_in=self.meannr_nodes_in,
             nrNodesSCC=self.meanNrNodesSCC,
             nrNodesOut=self.meanNrNodesOut,
             nrNodesTendrilsOut=self.meanNrNodesTendrilsOut,
-            nrNodesOCC=self.meanNrNodesOCC,
+            nr_nodes_OCC=self.meannr_nodes_OCC,
         )
         return bowTieNetworkValues
 
@@ -458,8 +458,8 @@ def getBowTieNetworkValues(gx, debug=False):
 
     nrNodesAllGraph = 0
     nrNodesWeaklyLCC = 0
-    nrNodesOCC = 0
-    nrNodesIn = 0
+    nr_nodes_OCC = 0
+    nr_nodes_in = 0
     nrNodesSCC = 0
     nrNodesOut = 0
     nrNodesTubes = 0
@@ -483,7 +483,7 @@ def getBowTieNetworkValues(gx, debug=False):
     LCC = max(nx.weakly_connected_components(gx), key=len)
     nrNodesWeaklyLCC = len(LCC)
     LCCn = gx.subgraph(LCC)
-    nrNodesOCC = nrNodesAllGraph - nrNodesWeaklyLCC
+    nr_nodes_OCC = nrNodesAllGraph - nrNodesWeaklyLCC
 
     # 3. for the largest then compute the strongly CC
     SCC = max(nx.strongly_connected_components(gx.subgraph(LCC)), key=len)
@@ -512,7 +512,7 @@ def getBowTieNetworkValues(gx, debug=False):
         break  # done only once because from all nodes in SCC the OUT can be reached
 
     nodesIn = inEgoGraph.nodes() - SCCn.nodes()
-    nrNodesIn = len(nodesIn)
+    nr_nodes_in = len(nodesIn)
 
     # print results
     __printDebug("nodesIn", nodesIn)
@@ -614,8 +614,8 @@ def getBowTieNetworkValues(gx, debug=False):
         __printDebug("nodesTendrilsOut: ", nodesTendrilsOut)
 
     bowTieNetworkValues = BowTieNetworkValues(
-        nrNodesOCC=nrNodesOCC,
-        nrNodesIn=nrNodesIn,
+        nr_nodes_OCC=nr_nodes_OCC,
+        nr_nodes_in=nr_nodes_in,
         nrNodesSCC=nrNodesSCC,
         nrNodesOut=nrNodesOut,
         nrNodesTubes=nrNodesTubes,
@@ -664,7 +664,7 @@ def _getBowTieVisualizationValues(bowTieNetworkValues, debug=False):
     __printDebug("hOCC: ", bowTieVisualizationValues.hOCC)
 
     # largest component in central area (In, SCC, Out, TendrilsIn, TendrilsOut)
-    if bowTieNetworkValues.nrNodesIn == bowTieNetworkValues.nrNodesOut:
+    if bowTieNetworkValues.nr_nodes_in == bowTieNetworkValues.nrNodesOut:
         equalInOut = True
 
     if bowTieNetworkValues.pctSCCNodes > max(
@@ -772,7 +772,7 @@ def _getBowTieVisualizationValues(bowTieNetworkValues, debug=False):
                 bowTieVisualizationValues.bTIn * bowTieVisualizationValues.hTIn,
             )
         # calculate area In
-        if bowTieNetworkValues.nrNodesIn > 0:
+        if bowTieNetworkValues.nr_nodes_in > 0:
             bowTieVisualizationValues.areaIn = bowTieNetworkValues.pctInNodes * (
                 bowTieVisualizationValues.areaSCC / bowTieNetworkValues.pctSCCNodes
             )
@@ -798,7 +798,7 @@ def _getBowTieVisualizationValues(bowTieNetworkValues, debug=False):
                 / bowTieVisualizationValues.bTOut
             )
         # calculate area OCC and width (widht is horizontal)
-        if bowTieNetworkValues.nrNodesOCC > 0:
+        if bowTieNetworkValues.nr_nodes_OCC > 0:
             bowTieVisualizationValues.areaOCC = bowTieNetworkValues.pctOCCNodes * (
                 bowTieVisualizationValues.areaSCC / bowTieNetworkValues.pctSCCNodes
             )
@@ -833,13 +833,13 @@ def plotPieNetworkValues(bowTieNetworkValues):
     # get basic plot of node distribution
     labels = ("IN", "SCC", "OUT", "Tubes", "TendrilsIn", "TendrilsOut", "OCC")
     sizes = (
-        bowTieNetworkValues.nrNodesIn,
+        bowTieNetworkValues.nr_nodes_in,
         bowTieNetworkValues.nrNodesSCC,
         bowTieNetworkValues.nrNodesOut,
         bowTieNetworkValues.nrNodesTubes,
         bowTieNetworkValues.nrNodesTendrilsIn,
         bowTieNetworkValues.nrNodesTendrilsOut,
-        bowTieNetworkValues.nrNodesOCC,
+        bowTieNetworkValues.nr_nodes_OCC,
     )
 
     fig, ax1 = plt.subplots()
@@ -949,7 +949,7 @@ def plotBowTie(
 
     # Triangle IN
     Ax = RTinx + bowTieVisualizationValues.bTIn + 0.05
-    if bowTieNetworkValues.nrNodesIn > 0:
+    if bowTieNetworkValues.nr_nodes_in > 0:
         coordsInStr = (
             str(Ax)
             + " "
@@ -970,7 +970,7 @@ def plotBowTie(
             str("IN\n")
             + str(bowTieNetworkValues.pctInNodes)
             + str(" %\n n=")
-            + str(bowTieNetworkValues.nrNodesIn)
+            + str(bowTieNetworkValues.nr_nodes_in)
         )
         __plot_label(
             Ax + bowTieVisualizationValues.hIn / 2, YAxe, labelIn, alineation="center"
@@ -1095,9 +1095,9 @@ def plotBowTie(
         str("OCC\n")
         + str(bowTieNetworkValues.pctOCCNodes)
         + str(" %\n n=")
-        + str(bowTieNetworkValues.nrNodesOCC)
+        + str(bowTieNetworkValues.nr_nodes_OCC)
     )
-    if bowTieNetworkValues.nrNodesOCC > 0:
+    if bowTieNetworkValues.nr_nodes_OCC > 0:
         if bowTieNetworkValues.pctOCCNodes <= 20:
             # draw ellipse
             ellipse = Ellipse(
@@ -1299,11 +1299,11 @@ def getEnsambleBowTieNetworkValues(gx, samples=5, model="configuration", debug=F
         reusltNodesWeaklyLCC.append(btV.nrNodesWeaklyLCC)
         resultNodesTubes.append(btV.nrNodesTubes)
         resultNodesTendrilsIn.append(btV.nrNodesTendrilsIn)
-        resultsNodesIn.append(btV.nrNodesIn)
+        resultsNodesIn.append(btV.nr_nodes_in)
         resultNodesSCC.append(btV.nrNodesSCC)
         resultNodesOut.append(btV.nrNodesOut)
         resultNodesTendrilsOut.append(btV.nrNodesTendrilsOut)
-        resultNodesOCC.append(btV.nrNodesOCC)
+        resultNodesOCC.append(btV.nr_nodes_OCC)
 
     __printDebug("Result Nodes All Graph: ", resultsNodesAllGraph)
 
@@ -1313,20 +1313,20 @@ def getEnsambleBowTieNetworkValues(gx, samples=5, model="configuration", debug=F
         meanNrNodesWeaklyLCC=np.mean(reusltNodesWeaklyLCC, dtype=np.float64),
         meanNrNodesTubes=np.mean(resultNodesTubes, dtype=np.float64),
         meanNrNodesTendrilsIn=np.mean(resultNodesTendrilsIn, dtype=np.float64),
-        meanNrNodesIn=np.mean(resultsNodesIn, dtype=np.float64),
+        meannr_nodes_in=np.mean(resultsNodesIn, dtype=np.float64),
         meanNrNodesSCC=np.mean(resultNodesSCC, dtype=np.float64),
         meanNrNodesOut=np.mean(resultNodesOut, dtype=np.float64),
         meanNrNodesTendrilsOut=np.mean(resultNodesTendrilsOut, dtype=np.float64),
-        meanNrNodesOCC=np.mean(resultNodesOCC, dtype=np.float64),
+        meannr_nodes_OCC=np.mean(resultNodesOCC, dtype=np.float64),
         stdNrNodesAllGraph=np.std(resultsNodesAllGraph, dtype=np.float64),
         stdNrNodesWeaklyLCC=np.std(reusltNodesWeaklyLCC, dtype=np.float64),
         stdNrNodesTubes=np.std(resultNodesTubes, dtype=np.float64),
         stdNrNodesTendrilsIn=np.std(resultNodesTendrilsIn, dtype=np.float64),
-        stdNrNodesIn=np.std(resultsNodesIn, dtype=np.float64),
+        stdnr_nodes_in=np.std(resultsNodesIn, dtype=np.float64),
         stdNrNodesSCC=np.std(resultNodesSCC, dtype=np.float64),
         stdNrNodesOut=np.std(resultNodesOut, dtype=np.float64),
         stdNrNodesTendrilsOut=np.std(resultNodesTendrilsOut, dtype=np.float64),
-        stdNrNodesOCC=np.std(resultNodesOCC, dtype=np.float64),
+        stdnr_nodes_OCC=np.std(resultNodesOCC, dtype=np.float64),
     )
 
     return bowTieEnsembleNetworkValues
@@ -1380,9 +1380,12 @@ def calcZscores(bowTieNetworkValues, bowTieEnsembleNetworkValues):
     )
     bowTieZScores.zscoreNodesIn = (
         0
-        if (bowTieEnsembleNetworkValues.stdNrNodesIn == 0)
-        else (bowTieNetworkValues.nrNodesIn - bowTieEnsembleNetworkValues.meanNrNodesIn)
-        / bowTieEnsembleNetworkValues.stdNrNodesIn
+        if (bowTieEnsembleNetworkValues.stdnr_nodes_in == 0)
+        else (
+            bowTieNetworkValues.nr_nodes_in
+            - bowTieEnsembleNetworkValues.meannr_nodes_in
+        )
+        / bowTieEnsembleNetworkValues.stdnr_nodes_in
     )
     bowTieZScores.zscoreNodesSCC = (
         0
@@ -1411,11 +1414,12 @@ def calcZscores(bowTieNetworkValues, bowTieEnsembleNetworkValues):
     )
     bowTieZScores.zscoreNodesOCC = (
         0
-        if (bowTieEnsembleNetworkValues.stdNrNodesOCC == 0)
+        if (bowTieEnsembleNetworkValues.stdnr_nodes_OCC == 0)
         else (
-            bowTieNetworkValues.nrNodesOCC - bowTieEnsembleNetworkValues.meanNrNodesOCC
+            bowTieNetworkValues.nr_nodes_OCC
+            - bowTieEnsembleNetworkValues.meannr_nodes_OCC
         )
-        / bowTieEnsembleNetworkValues.stdNrNodesOCC
+        / bowTieEnsembleNetworkValues.stdnr_nodes_OCC
     )
 
     return bowTieZScores
