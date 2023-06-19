@@ -32,6 +32,9 @@ import time
 from datetime import datetime
 
 def _printDict(dic):
+    """
+    prints the keys and values of a dictionary in a readable list
+    """
     for keys,values in dic.items():
         print(keys , ": ", values)
 
