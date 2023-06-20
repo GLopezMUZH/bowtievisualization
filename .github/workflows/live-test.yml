@@ -1,6 +1,10 @@
 name: Pytest Coverage Comment
 on:
+  push:
+    branches:
+      - master
   pull_request:
+    types: [opened, synchronize, reopened]  
 
 permissions:
   contents: read
